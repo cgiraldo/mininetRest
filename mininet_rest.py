@@ -82,18 +82,19 @@ class MininetRest(Bottle):
         # Run cmd on node:
         node.sendCmd(rest)
         output = ''
-        timeout = 0
+        init_time = time.time()
         while node.waiting:
+            exec_time = time.time() - init_time
+            #timeout of 5 seconds
+            if exec_time > 5:
+                break
             data = node.monitor(timeoutms=1000)
             output += data
-            timeout += 1
-            if timeout > 10:
-                break
         # Force process to stop if not stopped in timeout
         if node.waiting:
             node.sendInt()
             time.sleep(0.5)
+            data = node.monitor(timeoutms=1000)
+            output += data
             node.waiting = False
-        data = node.read(1024)
-        output += data
         return output
