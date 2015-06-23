@@ -40,7 +40,8 @@ class MininetRest(Bottle):
 
     def post_node(self, node_name):
         node = self.net[node_name]
-        node.params.update(request.json)
+        node.params.update(request.json['params'])
+
 
     def get_intf(self, node_name, intf_name):
         node = self.net[node_name]
